@@ -20,7 +20,7 @@ namespace hmitest0713
         public float[] ReadFloat(string address, ushort length)
         {
             float[] f = new float[length];
-            ushort len = (ushort)(length * 8 * 4);
+            ushort len = (ushort)(length * 2);
             McAddressData mcAddressData = McAddressData.ParseKeyenceFrom(address, len);
             if (!mcAddressData.IsSuccess)
             {
@@ -33,8 +33,8 @@ namespace hmitest0713
             ushort errorCode = Convert.ToUInt16(Encoding.ASCII.GetString(read, 18, 4), 16);
             if (errorCode != 0) return null;
 
-            byte[] extract = ExtractActualData(read, true);
-            for (int i = 0; i < extract.Length / 4; i++)
+            byte[] extract = ExtractActualData(read, false);
+            for (int i = 0; i < (extract.Length)/ 4; i++)
             {
                 f[i] = BitConverter.ToSingle(extract, i * 4);
             }

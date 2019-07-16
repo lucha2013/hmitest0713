@@ -38,7 +38,7 @@ namespace hmitest0713
 
         private bool ConnectSocket(IPEndPoint ipe)
         {
-            Socket keySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+            keySocket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
             try
             {
                 keySocket.BeginConnect(ipe, new AsyncCallback(AsyncConnectCallback), keySocket);
@@ -158,7 +158,12 @@ namespace hmitest0713
                 }
                 else
                 {
-                    return receiveBuff;
+                    byte[] buff = new byte[len];
+                    for(int i = 0; i < len; i++)
+                    {
+                        buff[i] = receiveBuff[i];
+                    }
+                    return buff;
                 }
 
             }
