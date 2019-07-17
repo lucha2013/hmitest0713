@@ -41,6 +41,33 @@ namespace hmitest0713
             return f;
 
         }
+        public bool WriteFloat(string address, float[] f)
+        {
+
+            ushort len = (ushort)(f.Count() * 2);
+            McAddressData mcAddressData = McAddressData.ParseKeyenceFrom(address, len);
+            if (!mcAddressData.IsSuccess)
+            {
+                return false;
+            }
+            byte[] buff = new byte[f.Count() * 4];
+            byte[] tmp = new byte[4];
+            for (int i = 0; i < f.Count(); i++) 
+            {
+                tmp = BitConverter.GetBytes(f[i]);
+                Array.Copy(tmp, 0, buff, i * 4, 4);
+            }
+            byte[] command = MelsecHelper.BuildAsciiWriteWordCoreCommand(mcAddressData, buff);
+
+
+            byte[] read = SendCommand(PackMcCommand(command, 0, 0));
+
+            ushort errorCode = Convert.ToUInt16(Encoding.ASCII.GetString(read, 18, 4), 16);
+            if (errorCode != 0) return false;
+
+            return true;
+
+        }
 
         private byte[] SendCommand(byte[] v)
         {
